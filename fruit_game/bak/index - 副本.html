@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抓大鹅 · 水果消消乐</title>
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 22px 14px 36px;
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        color: #38234f;
+        background: linear-gradient(135deg, #f7d9ff 0%, #d9e7ff 48%, #ffe2ec 100%);
+    }
+
+    .game {
+        width: min(760px, 100%);
+        margin: 0 auto;
+        padding: 22px;
+        border: 1px solid rgba(255,255,255,.75);
+        border-radius: 28px;
+        background: rgba(255,255,255,.72);
+        box-shadow: 0 18px 50px rgba(82, 48, 119, .18);
+        backdrop-filter: blur(8px);
+    }
+
+    h1 {
+        margin: 0;
+        text-align: center;
+        font-size: clamp(28px, 6vw, 42px);
+        letter-spacing: 2px;
+    }
+
+    .subtitle {
+        margin: 8px 0 18px;
+        text-align: center;
+        color: #765c91;
+        font-size: 14px;
+    }
+
+    .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .counter {
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: #f0e4ff;
+        font-weight: 700;
+    }
+
+    .restart {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 17px;
+        color: white;
+        background: linear-gradient(135deg, #8e5de7, #bd62cb);
+        box-shadow: 0 5px 0 #7545b9;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .restart:active { transform: translateY(2px); box-shadow: 0 3px 0 #7545b9; }
+
+    .message {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 12px;
+        margin: 10px 0 14px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.8);
+        color: #6d4289;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .items {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 350px;
+        margin: 0 auto 20px;
+        overflow: visible;
+        isolation: isolate;
+        border: 2px dashed rgba(156, 112, 194, .25);
+        border-radius: 22px;
+        background: rgba(247, 239, 255, .55);
+    }
+
+    /* 水果：只显示水果图案，不显示卡片 */
+.item {
+    position: absolute;
+
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* 去掉卡片背景和边框 */
+    background: transparent;
+background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    outline: none;
+
+    /* 水果大小 */
+    font-size: 0;
+   // line-height: 1;
+
+    /* 保留点击功能和上下层遮挡 */
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+
+    /* 不规则水果不需要卡片轮廓 */
+    overflow: visible;
+
+    transition: transform 0.15s ease;
+}
+
+/* 鼠标放上去时，水果轻轻放大 */
+.item:hover {
+    transform: scale(1.12);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* 点击时轻微缩放 */
+.item:active {
+    transform: scale(0.92);
+}
+
+/* 键盘操作时保留清晰的焦点提示 */
+.item:focus-visible {
+    outline: 2px dashed #ff9800;
+    outline-offset: 2px;
+}
+
+    .item:hover:not(:disabled) { transform: translateY(-3px) scale(1.03); }
+    .item:focus-visible { outline: 3px solid #8e5de7; outline-offset: 2px; }
+    .item:disabled { cursor: default; }
+    .item.is-blocked { filter: saturate(.65) brightness(.92); }
+
+    .tray-title {
+        margin: 0 0 9px;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .slots {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 7px;
+        padding: 11px;
+        border-radius: 18px;
+        background: #e9dcfa;
+        box-shadow: inset 0 3px 8px rgba(87, 49, 119, .1);
+    }
+
+    .slot {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+ min-width: 0;
+        height: 58px;
+        border: 2px dashed #c5a9e3;
+        border-radius: 13px;
+        background: rgba(255,255,255,.68);
+        font-size: clamp(22px, 4.4vw, 32px);
+    }
+
+/* 收集槽里的水果图片 */
+.slot-fruit-image {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+    pointer-events: none;
+}
+
+
+    .slot.filled {
+        border-style: solid;
+        border-color: white;
+        background: white;
+        box-shadow: 0 3px 8px rgba(85, 52, 110, .1);
+    }
+
+    .rules {
+        margin: 15px 0 0;
+        color: #765c91;
+        font-size: 13px;
+        line-height: 1.7;
+        text-align: center;
+    }
+
+    .celebration-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .celebration-text {
+        padding: 18px 25px;
+        border: 2px solid rgba(255,255,255,.9);
+        border-radius: 24px;
+        color: #fff;
+        background: linear-gradient(135deg, #a56af0, #f17bb8);
+        box-shadow: 0 12px 35px rgba(91, 42, 130, .3);
+        font-size: clamp(25px, 6vw, 42px);
+        font-weight: 900;
+        text-shadow: 0 2px 3px rgba(80, 35, 110, .2);
+        animation: pop-in .45s ease both, float-away 1.5s ease .45s both;
+    }
+
+    .sparkle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 24px;
+        animation: sparkle-fly 1.4s ease-out forwards;
+    }
+
+    @keyframes pop-in {
+        from { transform: scale(.45) rotate(-8deg); opacity: 0; }
+        to { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    @keyframes float-away {
+        0% { transform: translateY(0) scale(1); opacity: 1; }
+        100% { transform: translateY(-35px) scale(1.04); opacity: 0; }
+    }
+
+    @keyframes sparkle-fly {
+        from { transform: translate(-50%, -50%) scale(.4) rotate(0); opacity: 1; }
+        to {
+            transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(180deg);
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 520px) {
+        body { padding: 12px 8px 24px; }
+        .game { padding: 15px 10px; border-radius: 22px; }
+        .items { height: 350px; }
+        .item { height: 64px; border-radius: 14px; }
+        .slots { gap: 4px; padding: 7px; }
+        .slot { height: 49px; border-radius: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    /* 失败提示：覆盖在收集槽中央 */
+/* 失败提示：显示在水果堆叠区域正中央 */
+.failure-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 85%;
+    max-width: 360px;
+    box-sizing: border-box;
+    padding: 20px 12px;
+
+    background: rgba(55, 25, 30, 0.94);
+    border: 3px solid #ff7676;
+    border-radius: 18px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+
+    text-align: center;
+    color: white;
+
+    z-index: 99999;
+    animation: failurePop 0.35s ease-out;
+
+    /* 防止遮挡重新开始按钮 */
+    pointer-events: none;
+}
+
+.failure-title {
+    font-size: 27px;
+    font-weight: 900;
+    color: #ff8585;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    margin-bottom: 8px;
+}
+
+.failure-subtitle {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.failure-tip {
+    font-size: 13px;
+    color: #ffe0d0;
+}
+
+@keyframes failurePop {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.65);
+    }
+    75% {
+        transform: translate(-50%, -50%) scale(1.06);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+.timer {
+    font-size: 30px;
+    font-weight: bold;
+    color: #e53935;
+    text-align: center;
+    margin: 10px 0;
+    font-variant-numeric: tabular-nums;
+}
+</style>
+</head>
+<body>
+<main class="game">
+    <h1>🪿 抓大鹅 · 水果乐园</h1>
+    <p class="subtitle">收集水果，凑齐三个相同的就能消除！</p>
+
+    <div class="topbar">
+        <div class="counter">收集槽：<span id="count">0</span> / 7</div>
+        <div id="timer" class="timer">05:00</div>
+        <button class="restart" id="restart" type="button">🔄 重新开始</button>
+    </div>
+
+    <div class="message" id="message" role="status" aria-live="polite">
+        点击没有被挡住的水果，三个相同水果可以消除。
+    </div>
+
+    <section class="items" id="items" aria-label="水果堆叠区"></section>
+
+    <p class="tray-title">🧺 收集槽</p>
+    <section class="slots" id="slots" aria-label="七格收集槽"></section>
+
+    <p class="rules">
+        玩法：点击没有被上层挡住的水果；收集槽里凑齐三个相同水果会自动消除。<br>
+        收集槽装满七个且没有凑成三消就会失败；收集完所有水果并清空收集槽即可获胜。
+    </p>
+</main>
+
+<script>
+"use strict";
+
+// 8 种水果，共 60 个，每种数量都是 3 的倍数
+const originalFruits = [
+    ..."🍎".repeat(9),
+    ..."🍌".repeat(9),
+    ..."🍓".repeat(9),
+    ..."🍇".repeat(9),
+    ..."🍊".repeat(6),
+    ..."🍉".repeat(6),
+    ..."🍋".repeat(6),
+    ..."🍍".repeat(6)
+];
+let collected = [];
+let gameOver = false;
+let collectedTotal = 0;
+
+const items = document.getElementById("items");
+const slots = document.getElementById("slots");
+const count = document.getElementById("count");
+const message = document.getElementById("message");
+const restartButton = document.getElementById("restart");
+
+function shuffle(array) {
+    const result = array.slice();
+
+    for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+    }
+
+    return result;
+}
+
+// 创建堆叠的水果
+
+ // 创建随机堆叠的水果
+// 创建随机堆叠的水果
+function createItems() {
+    items.innerHTML = "";
+
+    const fruits = shuffle([...originalFruits]);
+
+    // 随机生成水果的位置和初始层级
+    const layout = fruits.map(function(fruit, index) {
+        return {
+            fruit: fruit,
+            left: 3 + Math.random() * 70,
+            top: 3 + Math.random() * 58,
+            layer: 1 + Math.floor(Math.random() * 5),
+            index: index
+        };
+    });
+
+    // 底层先画，上层后画
+    layout.sort(function(a, b) {
+        return a.layer - b.layer;
+    });
+
+    layout.forEach(function(data, index) {
+        const button = document.createElement("button");
+
+        button.className = "item";
+        button.textContent = data.fruit;
+        // 根据水果表情找到对应的透明 PNG 图片
+const fruitImages = {
+    "🍎": "apple.png",
+    "🍌": "banana.png",
+    "🍓": "strawberry.png",
+    "🍇": "grape.png",
+    "🍊": "orange.png",
+    "🍉": "watermelon.png",
+    "🍋": "lemon.png",
+    "🍍": "pineapple.png"
+};
+
+const imageName = fruitImages[data.fruit];
+
+if (imageName) {
+    button.style.backgroundImage =
+        "url('images/" + imageName + "')";
+    button.style.backgroundSize = "contain";
+    button.style.backgroundPosition = "center";
+    button.style.backgroundRepeat = "no-repeat";
+}
+        button.type = "button";
+
+        button.setAttribute(
+            "aria-label",
+            "收集" + data.fruit
+        );
+
+        // 随机位置
+        button.style.left = data.left + "%";
+        button.style.top = data.top + "%";
+
+        // 每颗水果使用不同层级，确保上层真的盖住下层
+        button.style.zIndex = String(index + 1);
+
+        // 保存层级信息
+        button.dataset.layer = String(index + 1);
+
+        button.addEventListener("click", function() {
+            if (gameOver || button.disabled) {
+                return;
+            }
+
+            // 不再拦截部分露出的水果
+            collectFruit(button);
+        });
+
+        items.appendChild(button);
+    });
+}
+
+
+// 根据水果 Emoji 获取对应图片路径
+function getFruitImage(fruit) {
+    const fruitImages = {
+        "🍎": "apple.png",
+        "🍌": "banana.png",
+        "🍓": "strawberry.png",
+        "🍇": "grape.png",
+        "🍊": "orange.png",
+        "🍉": "watermelon.png",
+        "🍋": "lemon.png",
+        "🍍": "pineapple.png"
+    };
+
+    return fruitImages[fruit]
+        ? "images/" + fruitImages[fruit]
+        : "";
+}
+
+// 判断当前水果的中心位置是否被更上层的水果覆盖
+// 由浏览器自动判断水果是否被遮挡
+function isBlocked(button) {
+    // 不再因为有重叠就禁止点击。
+    // 上层水果会自动挡住下层水果的点击区域，
+    // 下层水果露出来的部分仍然可以点击。
+    return false;
+}
+
+function updateBlockedStyles() {
+    const buttons = items.querySelectorAll(".item");
+
+    buttons.forEach(function(button) {
+        const blocked = !button.disabled &&
+            button.style.visibility !== "hidden" &&
+            isBlocked(button);
+
+        button.classList.toggle("is-blocked", blocked);
+        button.setAttribute("aria-disabled", blocked ? "true" : "false");
+    });
+}
+
+// 更新七格收集槽，用水果图片显示
+function updateSlots() {
+    slots.innerHTML = "";
+
+    for (let i = 0; i < 7; i++) {
+        const slot = document.createElement("div");
+        slot.className = "slot";
+
+        if (i < collected.length) {
+            const fruit = collected[i];
+
+            // 保留水果 Emoji 作为三消标识
+            slot.dataset.fruit = fruit;
+
+            // 获取对应的透明 PNG 图片
+            const imagePath = getFruitImage(fruit);
+
+            if (imagePath) {
+                const img = document.createElement("img");
+                img.src = imagePath;
+                img.alt = fruit;
+                img.className = "slot-fruit-image";
+
+                slot.appendChild(img);
+            } else {
+                // 找不到图片时，显示原来的 Emoji
+                slot.textContent = fruit;
+            }
+        }
+
+        slots.appendChild(slot);
+    }
+}
+
+function getFruitImage(fruit) {
+    const fruitImages = {
+        "🍎": "images/apple.png",
+        "🍌": "images/banana.png",
+        "🍓": "images/strawberry.png",
+        "🍇": "images/grape.png",
+        "🍊": "images/orange.png",
+        "🍉": "images/watermelon.png",
+        "🍋": "images/lemon.png",
+        "🍍": "images/pineapple.png"
+    };
+
+    return fruitImages[fruit] || "";
+}
+
+function collectFruit(button) {
+    if (gameOver || button.disabled || isBlocked(button)) return;
+
+    const fruit = button.textContent;
+    collected.push(fruit);
+    collectedTotal++;
+
+    button.disabled = true;
+    button.style.visibility = "hidden";
+    button.setAttribute("aria-hidden", "true");
+
+    const matching = collected.filter(function(item) {
+        return item === fruit;
+    });
+
+    if (matching.length >= 3) {
+        let removed = 0;
+        collected = collected.filter(function(item) {
+            if (item === fruit && removed < 3) {
+                removed++;
+                return false;
+            }
+            return true;
+        });
+
+        // message.textContent = "🎉 太棒啦！三个" + fruit + "消除成功！";
+        celebrate(fruit);
+    } else {
+        message.textContent = "收集到了 " + fruit + "！继续找找相同的水果吧。";
+    }
+
+    updateSlots();
+    updateBlockedStyles();
+
+    const remainingButtons = Array.from(items.querySelectorAll(".item")).filter(function(item) {
+        return !item.disabled && item.style.visibility !== "hidden";
+    });
+
+    if (remainingButtons.length === 0 && collected.length === 0) {
+        gameOver = true;
+        message.textContent = "🏆 太厉害啦！所有水果都收集并消除了！";
+        celebrate("🏆");
+        return;
+    }
+
+    if (collected.length >= 7) {
+    gameOver = true;
+    message.textContent = "";
+    showFailureOverlay();
+    updateBlockedStyles();
+}
+}
+
+function showFailureOverlay(reason) {
+    if (document.querySelector(".failure-overlay")) return;
+
+    playFailureSound();
+
+    items.style.position = "relative";
+
+    const overlay = document.createElement("div");
+    overlay.className = "failure-overlay";
+
+    const subtitle = reason === "时间耗尽"
+        ? "⏰ 时间耗尽！"
+        : "😵 收集槽满啦！";
+
+    overlay.innerHTML = `
+        <div class="failure-title">挑战失败</div>
+        <div class="failure-subtitle">${subtitle}</div>
+        <div class="failure-tip">点击重新开始，再挑战一次</div>
+    `;
+
+    items.appendChild(overlay);
+}
+
+function playFailureSound() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+        alert("当前浏览器不支持音效");
+        return;
+    }
+
+    const audioContext = new AudioContextClass();
+
+    audioContext.resume().then(function() {
+        // 模拟玻璃碎裂的噪声
+        const bufferSize = audioContext.sampleRate * 0.5;
+        const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+        }
+
+        const noise = audioContext.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioContext.createBiquadFilter();
+        filter.type = "highpass";
+        filter.frequency.value = 1200;
+
+        const volume = audioContext.createGain();
+        volume.gain.setValueAtTime(0.5, audioContext.currentTime);
+        volume.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+
+        noise.connect(filter);
+        filter.connect(volume);
+        volume.connect(audioContext.destination);
+
+        noise.start();
+        noise.stop(audioContext.currentTime + 0.5);
+
+        // 加入几声清脆的玻璃高频声
+        [1800, 2600, 3400].forEach(function(freq, index) {
+            const oscillator = audioContext.createOscillator();
+            const toneVolume = audioContext.createGain();
+
+            oscillator.type = "sine";
+            oscillator.frequency.value = freq;
+
+            toneVolume.gain.setValueAtTime(0.12, audioContext.currentTime + index * 0.08);
+            toneVolume.gain.exponentialRampToValueAtTime(
+                0.001,
+                audioContext.currentTime + index * 0.08 + 0.2
+            );
+
+            oscillator.connect(toneVolume);
+            toneVolume.connect(audioContext.destination);
+
+            oscillator.start(audioContext.currentTime + index * 0.08);
+            oscillator.stop(audioContext.currentTime + index * 0.08 + 0.2);
+        });
+    });
+}
+
+//let remainingTime = 5 * 60;
+let remainingTime = 15;
+let timerInterval = null;
+
+function updateTimerDisplay() {
+    const timer = document.getElementById("timer");
+
+    const minutes = Math.floor(remainingTime / 60);
+    const seconds = remainingTime % 60;
+
+    timer.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+
+    // remainingTime = 5 * 60;
+    remainingTime = 15;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(function() {
+        if (gameOver) {
+            clearInterval(timerInterval);
+            return;
+        }
+
+        remainingTime--;
+
+        updateTimerDisplay();
+
+        if (remainingTime <= 0) {
+            clearInterval(timerInterval);
+
+            gameOver = true;
+            message.textContent = "";
+
+            showFailureOverlay("时间耗尽");
+            updateBlockedStyles();
+        }
+    }, 1000);
+}
+
+// 三消成功：欢快的碰撞音效
+function celebrate(fruit) {
+    try {
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) return;
+
+        const audio = new AudioContextClass();
+
+        // 播放一个短促、有弹性的碰撞声
+        function playTone(frequency, startTime, duration, volume) {
+            const oscillator = audio.createOscillator();
+            const gain = audio.createGain();
+
+            oscillator.type = "triangle";
+
+            oscillator.frequency.setValueAtTime(
+                frequency,
+                startTime
+            );
+
+            oscillator.frequency.exponentialRampToValueAtTime(
+                frequency * 0.65,
+                startTime + duration
+            );
+
+            gain.gain.setValueAtTime(0.001, startTime);
+            gain.gain.linearRampToValueAtTime(
+                volume,
+                startTime + 0.008
+            );
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                startTime + duration
+            );
+
+            oscillator.connect(gain);
+            gain.connect(audio.destination);
+
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        }
+
+        const now = audio.currentTime;
+
+        // 三下轻快的水果碰撞声
+        playTone(520, now, 0.12, 0.22);
+        playTone(760, now + 0.07, 0.13, 0.20);
+        playTone(1050, now + 0.14, 0.20, 0.18);
+
+        // 最后补一个清脆的高音
+        playTone(1350, now + 0.23, 0.16, 0.12);
+
+        setTimeout(function() {
+            audio.close();
+        }, 800);
+
+    } catch (error) {
+        console.log("音效播放失败：", error);
+    }
+}
+
+function restartGame() {
+    startTimer();
+    collected = [];
+    gameOver = false;
+    collectedTotal = 0;
+    message.textContent = "点击没有被挡住的水果，三个相同水果可以消除。";
+    document.querySelectorAll(".celebration-layer").forEach(function(layer) {
+        layer.remove();
+    });
+
+    updateSlots();
+    createItems();
+    updateBlockedStyles();
+}
+
+restartButton.addEventListener("click", restartGame);
+restartGame();
+</script>
+</body>
+</html>
