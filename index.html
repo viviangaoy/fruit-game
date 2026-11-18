@@ -5,100 +5,338 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>抓大鹅 · 水果消消乐</title>
 <style>
-    * { box-sizing: border-box; }
 
-    body {
-        margin: 0;
-        min-height: 100vh;
-        padding: 22px 14px 36px;
-        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-        color: #38234f;
-        background: linear-gradient(135deg, #f7d9ff 0%, #d9e7ff 48%, #ffe2ec 100%);
-    }
+/* ========================================
+   水果抓抓乐 - 马卡龙水果花园主题
+   统一整理版
+======================================== */
 
-    .game {
-        width: min(760px, 100%);
-        margin: 0 auto;
-        padding: 22px;
-        border: 1px solid rgba(255,255,255,.75);
-        border-radius: 28px;
-        background: rgba(255,255,255,.72);
-        box-shadow: 0 18px 50px rgba(82, 48, 119, .18);
-        backdrop-filter: blur(8px);
-    }
+/* ===== 1. 全局与网页背景 ===== */
 
-    h1 {
-        margin: 0;
-        text-align: center;
-        font-size: clamp(28px, 6vw, 42px);
-        letter-spacing: 2px;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .subtitle {
-        margin: 8px 0 18px;
-        text-align: center;
-        color: #765c91;
-        font-size: 14px;
-    }
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 22px 14px 36px;
 
-    .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-bottom: 12px;
-    }
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    color: #704b3b;
 
-    .counter {
-        padding: 9px 14px;
-        border-radius: 999px;
-        background: #f0e4ff;
-        font-weight: 700;
-    }
+    background-image: url("images/fruit-garden-bg.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #bde9ff;
+}
 
-    .restart {
-        border: 0;
-        border-radius: 999px;
-        padding: 10px 17px;
-        color: white;
-        background: linear-gradient(135deg, #8e5de7, #bd62cb);
-        box-shadow: 0 5px 0 #7545b9;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-    }
+/* ===== 2. 游戏主卡片：奶油磨砂玻璃 ===== */
 
-    .restart:active { transform: translateY(2px); box-shadow: 0 3px 0 #7545b9; }
+.game {
+    width: min(1000px, 100%);
+    margin: 0 auto;
+    padding: 22px 18px;
 
-    .message {
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 9px 12px;
-        margin: 10px 0 14px;
-        border-radius: 14px;
-        background: rgba(255,255,255,.8);
-        color: #6d4289;
-        text-align: center;
-        font-weight: 600;
-    }
+    background: rgba(255, 248, 235, 0.28);
 
-    .items {
-        position: relative;
-        display: block;
-        width: 100%;
-        height: 350px;
-        margin: 0 auto 20px;
-        overflow: visible;
-        isolation: isolate;
-        border: 2px dashed rgba(156, 112, 194, .25);
-        border-radius: 22px;
-        background: rgba(247, 239, 255, .55);
-    }
+    backdrop-filter: blur(18px) saturate(135%);
+    -webkit-backdrop-filter: blur(18px) saturate(135%);
 
-    /* 水果：只显示水果图案，不显示卡片 */
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 28px;
+
+    box-shadow:
+        0 12px 35px rgba(160, 110, 75, 0.13),
+        inset 0 2px 15px rgba(255, 255, 255, 0.75);
+}
+
+/* ===== 3. 游戏标题 ===== */
+
+h1,
+.game-title {
+    margin: 8px 0 24px;
+    padding: 5px 0;
+
+    text-align: center;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+
+    font-size: clamp(34px, 6vw, 52px);
+    font-weight: 1000;
+    letter-spacing: 5px;
+
+    background: linear-gradient(
+    135deg,
+    rgba(255, 241, 220, 0.20) 0%,
+    rgba(255, 190, 195, 0.18) 50%,
+    rgba(252, 232, 216, 0.22) 100%
+
+    
+);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    filter: drop-shadow(0 3px 2px rgba(180, 112, 75, 0.16));
+
+        /* 强制恢复标题的蜜桃橙色 */
+    color: #F0784F !important;
+    background: none !important;
+    -webkit-text-fill-color: #F0784F !important;
+
+    text-shadow:
+        0 3px 5px rgba(180, 100, 65, 0.20);
+}
+
+.subtitle {
+    margin: 8px 0 18px;
+    text-align: center;
+    color: #a47a65;
+    font-size: 14px;
+}
+
+/* ===== 4. 顶部信息栏 ===== */
+
+.topbar {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 0.85fr)
+        minmax(0, 0.85fr)
+        minmax(0, 1.65fr)
+        minmax(0, 1fr)
+        48px;
+
+    grid-template-rows: 56px;
+    grid-auto-flow: column;
+
+    align-items: center;
+    justify-content: stretch;
+
+    gap: 9px;
+    width: 100%;
+    padding: 10px 4px;
+    margin-bottom: 14px;
+}
+
+.topbar > * {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+    height: 52px;
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid rgba(255, 255, 255, 0.95);
+    border-radius: 17px;
+
+    box-shadow: 0 4px 0 rgba(160, 115, 75, 0.13);
+
+    font-weight: 800;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-shadow: none;
+}
+
+/* 收集数量：蜜桃粉 */
+
+.topbar .counter {
+    grid-column: 1;
+    padding: 0 3px;
+
+    background: linear-gradient(145deg, #ffe4d7, #ffcbb9);
+    color: #98563f;
+    font-size: 15px;
+}
+
+/* 倒计时：奶油黄 */
+
+.topbar .timer {
+    grid-column: 2;
+    padding: 0 3px;
+
+    background: linear-gradient(145deg, #fff2b9, #ffdf83);
+    color: #a45c2f;
+
+    font-size: 23px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 水果统计：薄荷绿 */
+
+.topbar .fruit-stats {
+    grid-column: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    padding: 0 3px;
+
+    background: linear-gradient(145deg, #e1f7df, #bfe9c3);
+    color: #477b50;
+    font-size: 14px;
+}
+
+.stat-divider {
+    color: #8dbb8d;
+}
+
+/* 重新开始：草莓粉 */
+
+.topbar .restart {
+    grid-column: 4;
+
+    padding: 0 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(145deg, #ff9caa, #f47791);
+    border: 2px solid white;
+    border-radius: 16px;
+
+    color: white;
+    box-shadow: 0 5px 0 #d85e78;
+
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.topbar .restart:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+}
+
+.topbar .restart:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #d85e78;
+}
+
+/* 音乐按钮：天空蓝 */
+
+.topbar .music-toggle {
+    grid-column: 5;
+
+    width: 46px;
+    height: 46px;
+    padding: 0;
+
+    justify-self: center;
+
+    background: linear-gradient(145deg, #8edbfa, #54b9e9);
+    border: 3px solid white;
+    border-radius: 50%;
+
+    color: white;
+    box-shadow: 0 5px 0 #3998c8;
+
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.topbar .music-toggle:active {
+    transform: scale(0.92);
+}
+
+/* ===== 5. 提示信息 ===== */
+
+.message {
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 12px;
+    margin: 10px 0 14px;
+
+    background: rgba(255, 244, 217, 0.88);
+    border: 2px solid white;
+    border-radius: 16px;
+
+    color: #a16b4b;
+    text-align: center;
+    font-weight: 600;
+
+    box-shadow: 0 3px 10px rgba(170, 130, 90, 0.08);
+}
+
+/* ===== 6. 3D 水果区域：蜜桃磨砂玻璃 ===== */
+
+
+/* ===== 轻透蜜桃粉 3D 区域 ===== */
+#fruit3d-preview {
+    width: 100%;
+    height: 340px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 22px;
+
+    /* 只叠加淡粉色，不再增加第二层磨砂 */
+    background: linear-gradient(
+        135deg,
+        rgba(255, 239, 222, 0.14) 0%,
+        rgba(255, 190, 205, 0.12) 50%,
+        rgba(255, 228, 215, 0.16) 100%
+    );
+
+    /* 不重复模糊外层背景 */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+
+    border: 2px solid rgba(255, 255, 255, 0.82);
+
+    box-shadow:
+        inset 0 2px 10px rgba(255, 255, 255, 0.30),
+        0 5px 15px rgba(190, 130, 100, 0.10);
+}
+
+#fruit3d-preview canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+}
+
+
+.preview-title {
+    text-align: center;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #a47a65;
+}
+
+/* ===== 7. 水果区域（保留原有功能样式） ===== */
+
+.items {
+    position: relative;
+    display: block;
+
+    width: 100%;
+    height: 350px;
+    margin: 0 auto 20px;
+
+    overflow: visible;
+    isolation: isolate;
+
+    border: 2px dashed rgba(156, 112, 194, 0.25);
+    border-radius: 22px;
+    background: rgba(247, 239, 255, 0.55);
+}
+
 .item {
     position: absolute;
 
@@ -109,173 +347,192 @@
     align-items: center;
     justify-content: center;
 
-    /* 去掉卡片背景和边框 */
     background: transparent;
-background-color: transparent;
     border: none;
     border-radius: 0;
     box-shadow: none;
     outline: none;
 
-    /* 水果大小 */
-    font-size: 0;
-   // line-height: 1;
-
-    /* 保留点击功能和上下层遮挡 */
     padding: 0;
     margin: 0;
+
+    font-size: 0;
+
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
 
-    /* 不规则水果不需要卡片轮廓 */
     overflow: visible;
-
     transition: transform 0.15s ease;
 }
 
-/* 鼠标放上去时，水果轻轻放大 */
-.item:hover {
-    transform: scale(1.12);
-    background: transparent;
-    border: none;
-    box-shadow: none;
+.item:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.03);
 }
 
-/* 点击时轻微缩放 */
 .item:active {
     transform: scale(0.92);
 }
 
-/* 键盘操作时保留清晰的焦点提示 */
 .item:focus-visible {
     outline: 2px dashed #ff9800;
     outline-offset: 2px;
 }
 
-    .item:hover:not(:disabled) { transform: translateY(-3px) scale(1.03); }
-    .item:focus-visible { outline: 3px solid #8e5de7; outline-offset: 2px; }
-    .item:disabled { cursor: default; }
-    .item.is-blocked { filter: saturate(.65) brightness(.92); }
+.item:disabled {
+    cursor: default;
+}
 
-    .tray-title {
-        margin: 0 0 9px;
-        font-weight: 800;
-        text-align: center;
-    }
+.item.is-blocked {
+    filter: saturate(0.65) brightness(0.92);
+}
 
-    .slots {
-        display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 7px;
-        padding: 11px;
-        border-radius: 18px;
-        background: #e9dcfa;
-        box-shadow: inset 0 3px 8px rgba(87, 49, 119, .1);
-    }
+/* ===== 8. 收集槽 ===== */
 
-    .slot {
-        display: flex;
-        align-items: center;
-        justify-content: center;
- min-width: 0;
-        height: 58px;
-        border: 2px dashed #c5a9e3;
-        border-radius: 13px;
-        background: rgba(255,255,255,.68);
-        font-size: clamp(22px, 4.4vw, 32px);
-    }
+.tray-title {
+    margin: 0 0 9px;
+    font-weight: 800;
+    text-align: center;
+}
 
-/* 收集槽里的水果图片 */
+.slots {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+
+    gap: 7px;
+    padding: 11px;
+
+    border-radius: 18px;
+    background: #e9dcfa;
+
+    box-shadow: inset 0 3px 8px rgba(87, 49, 119, 0.1);
+}
+
+.slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 0;
+    height: 58px;
+
+    border: 2px dashed #c5a9e3;
+    border-radius: 13px;
+
+    background: rgba(255, 255, 255, 0.68);
+    font-size: clamp(22px, 4.4vw, 32px);
+}
+
 .slot-fruit-image {
     width: 38px;
     height: 38px;
+
     object-fit: contain;
     display: block;
     margin: auto;
+
     pointer-events: none;
 }
 
+.slot.filled {
+    border-style: solid;
+    border-color: white;
+    background: white;
 
-    .slot.filled {
-        border-style: solid;
-        border-color: white;
-        background: white;
-        box-shadow: 0 3px 8px rgba(85, 52, 110, .1);
-    }
+    box-shadow: 0 3px 8px rgba(85, 52, 110, 0.1);
+}
 
-    .rules {
-        margin: 15px 0 0;
-        color: #765c91;
-        font-size: 13px;
-        line-height: 1.7;
-        text-align: center;
-    }
+/* ===== 9. 游戏说明 ===== */
 
-    .celebration-layer {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        pointer-events: none;
-    }
+.rules {
+    margin: 15px 0 0;
+    color: #947caa;
 
-    .celebration-text {
-        padding: 18px 25px;
-        border: 2px solid rgba(255,255,255,.9);
-        border-radius: 24px;
-        color: #fff;
-        background: linear-gradient(135deg, #a56af0, #f17bb8);
-        box-shadow: 0 12px 35px rgba(91, 42, 130, .3);
-        font-size: clamp(25px, 6vw, 42px);
-        font-weight: 900;
-        text-shadow: 0 2px 3px rgba(80, 35, 110, .2);
-        animation: pop-in .45s ease both, float-away 1.5s ease .45s both;
-    }
+    font-size: 13px;
+    line-height: 1.7;
+    text-align: center;
+}
 
-    .sparkle {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        font-size: 24px;
-        animation: sparkle-fly 1.4s ease-out forwards;
-    }
+/* ===== 10. 消除庆祝动画 ===== */
 
-    @keyframes pop-in {
-        from { transform: scale(.45) rotate(-8deg); opacity: 0; }
-        to { transform: scale(1) rotate(0); opacity: 1; }
-    }
+.celebration-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
 
-    @keyframes float-away {
-        0% { transform: translateY(0) scale(1); opacity: 1; }
-        100% { transform: translateY(-35px) scale(1.04); opacity: 0; }
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    @keyframes sparkle-fly {
-        from { transform: translate(-50%, -50%) scale(.4) rotate(0); opacity: 1; }
-        to {
-            transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(180deg);
-            opacity: 0;
-        }
-    }
+    overflow: hidden;
+    pointer-events: none;
+}
 
-    @media (max-width: 520px) {
-        body { padding: 12px 8px 24px; }
-        .game { padding: 15px 10px; border-radius: 22px; }
-        .items { height: 350px; }
-        .item { height: 64px; border-radius: 14px; }
-        .slots { gap: 4px; padding: 7px; }
-        .slot { height: 49px; border-radius: 10px; }
-    }
+.celebration-text {
+    padding: 18px 25px;
 
-    @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 24px;
+
+    color: white;
+    background: linear-gradient(135deg, #a56af0, #f17bb8);
+
+    box-shadow: 0 12px 35px rgba(91, 42, 130, 0.3);
+
+    font-size: clamp(25px, 6vw, 42px);
+    font-weight: 900;
+
+    text-shadow: 0 2px 3px rgba(80, 35, 110, 0.2);
+
+    animation:
+        pop-in 0.45s ease both,
+        float-away 1.5s ease 0.45s both;
+}
+
+.sparkle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    font-size: 24px;
+    animation: sparkle-fly 1.4s ease-out forwards;
+}
+
+@keyframes pop-in {
+    from {
+        transform: scale(0.45) rotate(-8deg);
+        opacity: 0;
     }
-    /* 失败提示：覆盖在收集槽中央 */
-/* 失败提示：显示在水果堆叠区域正中央 */
+    to {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes float-away {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-35px) scale(1.04);
+        opacity: 0;
+    }
+}
+
+@keyframes sparkle-fly {
+    from {
+        transform: translate(-50%, -50%) scale(0.4) rotate(0);
+        opacity: 1;
+    }
+    to {
+        transform: translate(var(--dx), var(--dy)) scale(1.4) rotate(180deg);
+        opacity: 0;
+    }
+}
+
+/* ===== 11. 失败提示 ===== */
+
 .failure-overlay {
     position: absolute;
     left: 50%;
@@ -285,11 +542,13 @@ background-color: transparent;
     width: 85%;
     max-width: 360px;
     box-sizing: border-box;
+
     padding: 20px 12px;
 
     background: rgba(55, 25, 30, 0.94);
     border: 3px solid #ff7676;
     border-radius: 18px;
+
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
 
     text-align: center;
@@ -298,7 +557,6 @@ background-color: transparent;
     z-index: 99999;
     animation: failurePop 0.35s ease-out;
 
-    /* 防止遮挡重新开始按钮 */
     pointer-events: none;
 }
 
@@ -306,6 +564,7 @@ background-color: transparent;
     font-size: 27px;
     font-weight: 900;
     color: #ff8585;
+
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
     margin-bottom: 8px;
 }
@@ -334,509 +593,127 @@ background-color: transparent;
         transform: translate(-50%, -50%) scale(1);
     }
 }
-.timer {
-    font-size: 30px;
-    font-weight: bold;
-    color: #e53935;
-    text-align: center;
-    margin: 10px 0;
-    font-variant-numeric: tabular-nums;
-}
-.preview-title {
-    text-align: center;
-    font-weight: bold;
-    margin: 12px 0;
-    color: #765c91;
-}
 
-#fruit3d-preview {
-    width: 100%;
-    height: 340px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    border-radius: 22px;
-    background: linear-gradient(145deg, #30284b, #665078);
-}
 
-#fruit3d-preview canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
+/* =================================
+   手机端：宽屏利用型游戏状态栏
+   ================================= */
 
-/* ===== 水果抓抓乐：科技霓虹主题 ===== */
-
-body {
-    background:
-        radial-gradient(ellipse at top, #164baf 0%, #071638 65%, #030b20 100%);
-    color: #ffffff;
-}
-
-.game {
-    width: min(1000px, 100%);
-    padding: 22px 18px;
-    background: rgba(5, 22, 65, 0.88);
-    border: 2px solid rgba(0, 220, 255, 0.65);
-    border-radius: 24px;
-    box-shadow:
-        0 0 15px rgba(0, 220, 255, 0.5),
-        0 0 35px rgba(90, 50, 255, 0.35),
-        inset 0 0 25px rgba(0, 120, 255, 0.15);
-}
-
-/* 主标题 */
-.game-title {
-    margin: 0 0 16px;
-    text-align: center;
-    font-size: clamp(34px, 6vw, 52px);
-    font-weight: 1000;
-    letter-spacing: 5px;
-    color: #ffffff;
-    background: linear-gradient(
-        180deg,
-        #ffffff 10%,
-        #ffd86b 48%,
-        #ff8c25 85%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 5px #00d9ff)
-            drop-shadow(0 0 12px #7c42ff);
-}
-
-/* 玩法说明 */
-.subtitle {
-    margin: 0 0 18px;
-    color: #b9eaff;
-    text-align: center;
-    font-size: 13px;
-}
-
-/* 顶部横向信息栏 */
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    gap: 10px;
-    padding: 13px;
-    margin-bottom: 14px;
-    border: 2px solid #13dfff;
-    border-radius: 18px;
-    background: linear-gradient(
-        100deg,
-        rgba(9, 45, 130, 0.96),
-        rgba(35, 35, 130, 0.96),
-        rgba(75, 25, 130, 0.96)
-    );
-    box-shadow:
-        0 0 10px #00cfff,
-        0 0 22px rgba(150, 60, 255, 0.5),
-        inset 0 0 15px rgba(0, 200, 255, 0.18);
-}
-
-/* 收集槽和水果数量 */
-.counter,
-.fruit-stats {
-    padding: 10px 12px;
-    border: 1px solid rgba(80, 220, 255, 0.65);
-    border-radius: 12px;
-    background: rgba(0, 15, 65, 0.65);
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: bold;
-    white-space: nowrap;
-    text-shadow: 0 0 6px #00cfff;
-}
-
-.fruit-stats {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.stat-divider {
-    color: #64dfff;
-}
-
-/* 倒计时 */
-.timer {
-    margin: 0;
-    padding: 10px 12px;
-    border: 1px solid #00eaff;
-    border-radius: 12px;
-    background: rgba(0, 15, 65, 0.65);
-    color: #ffe36b;
-    font-size: 23px;
-    font-weight: 900;
-    white-space: nowrap;
-    text-shadow: 0 0 8px #ffb700;
-}
-
-/* 重新开始 */
-.restart {
-    padding: 12px 17px;
-    border: 2px solid #ff73ef;
-    border-radius: 13px;
-    color: white;
-    background: linear-gradient(135deg, #7045ff, #c42bdf);
-    box-shadow:
-        0 0 8px #ed4dff,
-        0 0 16px rgba(190, 50, 255, 0.5);
-    font-size: 14px;
-    font-weight: 900;
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-/* 音乐图标按钮 */
-.music-toggle {
-    width: 52px;
-    height: 52px;
-    flex-shrink: 0;
-    border: 2px solid #19eaff;
-    border-radius: 50%;
-    color: white;
-    background: linear-gradient(135deg, #0755c9, #5925c9);
-    box-shadow:
-        0 0 10px #00dfff,
-        inset 0 0 10px rgba(255,255,255,0.2);
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.music-toggle:active,
-.restart:active {
-    transform: scale(0.94);
-}
-
-/* 手机屏幕适配 */
-@media (max-width: 650px) {
-    .game {
-        padding: 16px 9px;
-    }
-
-    .topbar {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 7px;
-        padding: 9px 6px;
-    }
-
-    .counter,
-    .fruit-stats {
-        padding: 8px;
-        font-size: 12px;
-    }
-
-    .timer {
-        padding: 8px;
-        font-size: 19px;
-    }
-
-    .restart {
-        padding: 10px 12px;
-        font-size: 12px;
-    }
-
-    .music-toggle {
-        width: 44px;
-        height: 44px;
-    }
-}
-/* ===== 顶部界面第二版优化 ===== */
-
-/* 游戏标题：简洁科技感 */
-.game-title {
-    margin: 8px 0 24px;
-    padding: 5px 0;
-
-    text-align: center;
-    font-family:
-        "Microsoft YaHei",
-        "PingFang SC",
-        "Noto Sans SC",
-        sans-serif;
-
-    font-size: clamp(38px, 6vw, 56px);
-    font-weight: 1000;
-    letter-spacing: 8px;
-
-    color: #ffffff;
-    background: linear-gradient(
-        180deg,
-        #ffffff 5%,
-        #b8f5ff 45%,
-        #48caff 100%
-    );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    filter:
-        drop-shadow(0 0 3px #ffffff)
-        drop-shadow(0 0 9px #00cfff)
-        drop-shadow(0 0 20px #286bff);
-}
-
-/* 顶部五个区域均匀填满 */
-.topbar {
-    display: grid;
-
-    grid-template-columns:
-        0.9fr
-        0.9fr
-        1.7fr
-        1.2fr
-        0.55fr;
-
-    align-items: center;
-    justify-content: stretch;
-    gap: 10px;
-
-    width: 100%;
-    padding: 13px;
-}
-
-/* 每个信息区域都允许自适应 */
-.topbar > * {
-    min-width: 0;
-    width: 100%;
-    margin: 0;
-    text-align: center;
-}
-
-/* 收集槽 */
-.topbar .counter {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 12px 5px;
-    font-size: 16px;
-}
-
-/* 倒计时 */
-.topbar .timer {
-    padding: 12px 5px;
-    font-size: 25px;
-}
-
-/* 水果总数和剩余数量 */
-.topbar .fruit-stats {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 7px;
-    padding: 12px 5px;
-    font-size: 15px;
-}
-
-/* 重新开始按钮 */
-.topbar .restart {
-    width: 100%;
-    padding: 13px 5px;
-    font-size: 15px;
-}
-
-/* 音乐按钮保持圆形，不拉伸 */
-.topbar .music-toggle {
-    width: 54px;
-    height: 54px;
-    justify-self: center;
-    padding: 0;
-}
-
-/* 手机屏幕适配 */
 @media (max-width: 650px) {
 
-    .game-title {
-        font-size: 36px;
-        letter-spacing: 4px;
-        margin-bottom: 18px;
-    }
-
-    .topbar {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-
-    .topbar .fruit-stats {
-        grid-column: span 2;
-    }
-
-    .topbar .counter,
-    .topbar .timer {
-        font-size: 17px;
-    }
-
-    .topbar .restart {
-        font-size: 13px;
-    }
-
-    .topbar .music-toggle {
-        width: 46px;
-        height: 46px;
-    }
-}
-
-/* ===== 顶部信息栏第四版：强制单行 ===== */
-
-.topbar {
+   .topbar {
     display: grid !important;
 
-    /* 固定五列，任何宽度都不换行 */
     grid-template-columns:
-        minmax(0, 0.85fr)
-        minmax(0, 0.85fr)
-        minmax(0, 1.65fr)
-        minmax(0, 1fr)
-        48px !important;
+        0.85fr
+        1.25fr
+        1.65fr
+        42px
+        42px !important;
 
-    grid-template-rows: 56px !important;
-    grid-auto-flow: column !important;
+    grid-template-rows: 46px !important;
+    grid-auto-flow: column;
 
-    align-items: center;
-    justify-content: stretch;
-    gap: 6px;
-
-    width: 100%;
-    padding: 9px;
-    overflow: hidden;
-}
-
-/* 所有信息框统一尺寸 */
-.topbar > * {
-    grid-row: 1 !important;
-
-    box-sizing: border-box;
-    min-width: 0 !important;
+    gap: 5px !important;
     width: 100% !important;
-    height: 52px !important;
-    margin: 0 !important;
+    padding: 8px 2px !important;
+    margin-bottom: 14px;
 
-    display: flex;
     align-items: center;
-    justify-content: center;
-
-    border-radius: 11px;
-    font-size: 15px;
-    font-weight: 800;
-    white-space: nowrap;
-    overflow: hidden;
 }
 
-/* 明确指定每个区域的位置 */
-.topbar .counter {
-    grid-column: 1 !important;
-    padding: 0 3px;
-    color: white;
-    font-size: 16px;
-}
+    /* 所有控件统一高度 */
+    .counter,
+    .timer,
+    .fruit-stats,
+    .restart,
+    .music-toggle {
+        box-sizing: border-box !important;
 
-.topbar .timer {
-    grid-column: 2 !important;
-    padding: 0 2px;
-    color: #ffe36b;
-    font-size: 23px;
-    font-weight: 900;
-}
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 46px !important;
+        min-height: 46px !important;
 
-.topbar .fruit-stats {
-    grid-column: 3 !important;
-    padding: 0 3px;
-    gap: 4px;
-    color: white;
-    font-size: 14px;
-}
+        margin: 0 !important;
+        padding: 0 3px !important;
 
-.topbar .restart {
-    grid-column: 4 !important;
-    padding: 0 3px;
+        border-radius: 15px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-
-    color: white;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.topbar .music-toggle {
-    grid-column: 5 !important;
-
-    width: 46px !important;
-    height: 46px !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-
-    justify-self: center;
-    border-radius: 50% !important;
-    font-size: 22px;
-}
-
-/* 中等屏幕：缩小字体，重新开始只留图标 */
-@media (max-width: 650px) {
-
-    .topbar {
-        grid-template-columns:
-            minmax(0, 0.8fr)
-            minmax(0, 0.8fr)
-            minmax(0, 1.5fr)
-            minmax(0, 0.55fr)
-            42px !important;
-
-        grid-template-rows: 46px !important;
-        gap: 4px;
-        padding: 6px;
+        white-space: nowrap;
+        overflow: hidden;
     }
 
-    .topbar > * {
-        height: 44px !important;
-        font-size: 12px;
+    /* 收集槽：0/7 */
+    .counter {
+        flex: none !important;
+        justify-content: center;
+        gap: 1px;
+        font-size: 14px !important;
     }
 
-    .topbar .counter {
-        font-size: 12px;
-    }
-
-    .topbar .timer {
-        font-size: 18px;
-    }
-
-    .topbar .fruit-stats {
-        font-size: 10px;
-        gap: 2px;
-    }
-
-    /* 隐藏重新开始文字 */
-    .topbar .restart-text {
+    .counter-icon {
         display: none !important;
     }
 
-    .topbar .restart {
-        font-size: 0 !important;
+    /* 倒计时：完整显示 04:45 */
+    .timer {
+        flex: none !important;
+        justify-content: center;
+        font-size: 15px !important;
+        letter-spacing: -0.5px;
+    }
+
+    /* 水果统计：剩余：29/30 */
+    .fruit-stats {
+        flex: none !important;
+        justify-content: center;
+        gap: 2px !important;
+        font-size: 12px !important;
+        border-radius: 15px !important;
+    }
+
+    .fruit-stats .stat-divider,
+    .fruit-stats .total-stat .stat-label {
+        display: none !important;
+    }
+
+    .fruit-stats .stat-label,
+    .fruit-stats .stat-slash {
+        display: inline !important;
+    }
+
+    /* 重新开始：只显示图标 */
+    .restart {
+        flex: none !important;
+        justify-content: center;
         padding: 0 !important;
     }
 
-    .topbar .restart-icon {
-        display: inline-block !important;
-        margin: 0 !important;
-        font-size: 24px !important;
+    .restart-text {
+        display: none !important;
     }
 
-    .topbar .music-toggle {
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 19px;
+    .restart-icon {
+        display: inline !important;
+        font-size: 22px !important;
+    }
+
+    /* 音乐：只显示图标 */
+    .music-toggle {
+        flex: none !important;
+        justify-content: center;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        font-size: 20px !important;
     }
 }
 
-/* 极窄屏：进一步压缩 */
+
+/* ===== 13. 极窄屏幕适配 ===== */
+
 @media (max-width: 400px) {
 
     .topbar {
@@ -845,7 +722,7 @@ body {
             minmax(0, 0.75fr)
             minmax(0, 1.35fr)
             minmax(0, 0.45fr)
-            34px !important;
+            34px;
 
         gap: 3px;
         padding: 4px;
@@ -865,15 +742,737 @@ body {
     }
 
     .topbar .music-toggle {
-        width: 32px !important;
-        height: 32px !important;
+        width: 32px;
+        height: 32px;
         font-size: 16px;
     }
 
-    .topbar .restart-icon {
+    .topbar .restart {
+        font-size: 10px;
+    }
+}
+
+/* ===== 14. 减少动态效果设置 ===== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* =================================
+   水果抓抓乐 · 3D 马卡龙果冻 UI
+   ================================= */
+
+/* 1. 水果木牌标题 */
+.game-title {
+    position: relative;
+    display: table;
+    margin: 8px auto 30px !important;
+    padding: 15px 48px 19px !important;
+
+    border: 4px solid rgba(255, 239, 199, 0.95) !important;
+    border-radius: 24px 24px 30px 30px !important;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f9c887 0%,
+            #e9a45f 45%,
+            #c98248 100%
+        ) !important;
+
+    color: #fff9df !important;
+    -webkit-text-fill-color: #fff9df !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+
+    font-size: clamp(32px, 5vw, 52px) !important;
+    font-weight: 1000 !important;
+    letter-spacing: 5px !important;
+
+    text-shadow:
+        0 2px 0 #bd713d,
+        0 4px 0 rgba(151, 86, 43, 0.5),
+        0 6px 12px rgba(120, 70, 35, 0.25) !important;
+
+    box-shadow:
+        0 7px 0 #c47d47,
+        0 12px 22px rgba(154, 94, 50, 0.20),
+        inset 0 3px 5px rgba(255,255,255,0.75) !important;
+}
+
+/* 标题两侧的水果装饰 */
+.game-title::before {
+    content: "🍓";
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-12deg);
+    font-size: 34px;
+}
+
+.game-title::after {
+    content: "🍇";
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    transform: translateY(-50%) rotate(12deg);
+    font-size: 34px;
+}
+
+
+/* 2. 顶部信息栏布局 */
+.topbar {
+    display: grid !important;
+    grid-template-columns:
+        minmax(100px, 0.85fr)
+        minmax(100px, 0.85fr)
+        minmax(180px, 1.65fr)
+        minmax(120px, 1.1fr)
+        58px !important;
+
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 22px !important;
+}
+
+
+/* 3. 收集数量 */
+.topbar .counter {
+    background: linear-gradient(
+        145deg,
+        #ffe6d9,
+        #ffc6b5
+    ) !important;
+
+    border: 3px solid white !important;
+    border-radius: 24px !important;
+
+    color: #995b3e !important;
+    font-size: 22px !important;
+    font-weight: 900 !important;
+
+    box-shadow:
+        0 5px 0 rgba(190, 126, 93, 0.18),
+        inset 0 3px 7px rgba(255,255,255,0.85) !important;
+}
+
+
+/* 4. 倒计时 */
+.topbar .timer {
+    background: linear-gradient(
+        145deg,
+        #fff1b8,
+        #ffd879
+    ) !important;
+
+    border: 3px solid white !important;
+    border-radius: 24px !important;
+
+    color: #a96330 !important;
+    font-size: 27px !important;
+    font-weight: 1000 !important;
+
+    box-shadow:
+        0 5px 0 rgba(190, 143, 72, 0.18),
+        inset 0 3px 7px rgba(255,255,255,0.85) !important;
+}
+
+
+/* 5. 水果总数 */
+.topbar .fruit-stats {
+    background: linear-gradient(
+        145deg,
+        #e2f8d9,
+        #b9e8bd
+    ) !important;
+
+    border: 3px solid white !important;
+    border-radius: 24px !important;
+
+    color: #477b50 !important;
+    font-size: 17px !important;
+    font-weight: 900 !important;
+
+    box-shadow:
+        0 5px 0 rgba(93, 157, 99, 0.17),
+        inset 0 3px 7px rgba(255,255,255,0.85) !important;
+}
+
+
+/* 6. 重新开始按钮 */
+.topbar .restart {
+    background: linear-gradient(
+        145deg,
+        #ff9eb2,
+        #f36d91
+    ) !important;
+
+    border: 3px solid white !important;
+    border-radius: 24px !important;
+
+    color: white !important;
+    font-size: 17px !important;
+    font-weight: 900 !important;
+
+    box-shadow:
+        0 5px 0 #d95d7d,
+        inset 0 3px 7px rgba(255,255,255,0.45) !important;
+
+    transition: transform 0.18s ease, filter 0.18s ease !important;
+}
+
+.topbar .restart:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+}
+
+.topbar .restart:active {
+    transform: translateY(3px) !important;
+    box-shadow: 0 2px 0 #d95d7d !important;
+}
+
+
+/* 7. 音乐开关 */
+.topbar .music-toggle {
+    background: linear-gradient(
+        145deg,
+        #a7e8ff,
+        #59bde9
+    ) !important;
+
+    border: 3px solid white !important;
+    border-radius: 50% !important;
+
+    color: white !important;
+    font-size: 23px !important;
+
+    box-shadow:
+        0 5px 0 #3998c8,
+        inset 0 3px 7px rgba(255,255,255,0.65) !important;
+
+    transition: transform 0.18s ease !important;
+}
+
+.topbar .music-toggle:hover {
+    transform: translateY(-2px);
+}
+
+.topbar .music-toggle:active {
+    transform: translateY(3px) !important;
+}
+
+
+/* 8. 窄屏适配 */
+@media (max-width: 650px) {
+    .game-title {
+        padding: 12px 28px 15px !important;
+        font-size: 32px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .game-title::before,
+    .game-title::after {
+        font-size: 23px;
+    }
+
+    .topbar {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 9px !important;
+    }
+
+    .topbar .fruit-stats {
+        grid-column: span 2;
+    }
+
+    .topbar .restart {
+        min-height: 48px;
+    }
+}
+
+/* ===== 3D 水果木牌标题图片 ===== */
+.game-title {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    margin: 0 auto 18px !important;
+    padding: 0 !important;
+
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    font-size: 0 !important;
+    text-shadow: none !important;
+}
+
+.game-title img {
+    display: block;
+    width: min(580px, 90%);
+    height: auto;
+    object-fit: contain;
+}
+
+/* 取消旧标题的水果装饰 */
+.game-title::before,
+.game-title::after {
+    content: none !important;
+}
+
+
+/* =================================
+   3D 标题悬浮布局 · 优化版
+   ================================= */
+
+/* 外层游戏卡片 */
+.game {
+    position: relative;
+    overflow: visible !important;
+
+    /* 整体向下移动，为标题留出悬浮空间 */
+    margin-top: 120px !important;
+
+    /* 给标题和按钮之间预留空间 */
+    padding-top: 120px !important;
+}
+
+/* 标题悬浮在卡片上边缘 */
+.game-title {
+    position: absolute !important;
+    z-index: 10 !important;
+
+    top: -110px;
+    left: 0;
+    width: 100%;
+
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    font-size: 0 !important;
+}
+
+/* 横向放大标题图片 */
+.game-title img {
+    display: block;
+    width: min(820px, 85%) !important;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 顶部按钮保持在标题下方 */
+.topbar {
+    position: relative;
+    z-index: 2;
+    margin-top: 0 !important;
+}
+
+
+@media (max-width: 650px) {
+    .game {
+        margin-top: 45px !important;
+        padding-top: 25px !important;
+    }
+
+    .game-title {
+        top: -70px;
+    }
+
+    .game-title img {
+        width: 85% !important;
+    }
+
+    .topbar {
+        margin-top: 0 !important;
+        row-gap: 8px;
+    }
+}
+
+
+
+/* =================================
+   马卡龙果冻按钮 · 统一视觉风格
+   ================================= */
+
+/* 顶部信息栏统一对齐 */
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 收集数量、倒计时、水果统计、重新开始 */
+.counter,
+.timer,
+.fruit-stats,
+.restart {
+    box-sizing: border-box;
+    min-height: 58px !important;
+    height: 58px !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px !important;
+    border: 2px solid rgba(255,255,255,0.95) !important;
+
+    font-family: inherit;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+
+    box-shadow:
+        inset 0 2px 5px rgba(255,255,255,0.65),
+        0 4px 0 rgba(160,120,100,0.16),
+        0 6px 12px rgba(130,100,90,0.10) !important;
+}
+
+/* 收集数量：蜜桃粉 */
+.counter {
+    background: linear-gradient(
+        145deg,
+        #ffe5da,
+        #ffc9b9
+    ) !important;
+    color: #98583f !important;
+    flex: 0 1 150px;
+}
+
+/* 倒计时：奶油黄 */
+.timer {
+    background: linear-gradient(
+        145deg,
+        #fff1c5,
+        #ffdc85
+    ) !important;
+    color: #a66a32 !important;
+    flex: 0 1 145px;
+}
+
+/* 水果统计：薄荷绿 */
+.fruit-stats {
+    background: linear-gradient(
+        145deg,
+        #e0f6dc,
+        #bce9c1
+    ) !important;
+    color: #477d51 !important;
+    flex: 1 1 230px;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+/* 重新开始：草莓粉 */
+.restart {
+    background: linear-gradient(
+        145deg,
+        #ff9db6,
+        #f36c91
+    ) !important;
+
+    color: #ffffff !important;
+    flex: 0 1 165px;
+    padding: 0 20px !important;
+    cursor: pointer;
+    transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+/* 按钮文字统一 */
+.restart-text,
+.restart-icon {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+/* 音乐按钮：天空蓝 */
+.music-toggle {
+    box-sizing: border-box;
+
+    width: 58px !important;
+    min-width: 58px !important;
+    height: 58px !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 !important;
+    border-radius: 50% !important;
+    border: 2px solid #ffffff !important;
+
+    background: linear-gradient(
+        145deg,
+        #d8f5ff,
+        #83d8f4
+    ) !important;
+
+    color: #397b9b !important;
+    font-size: 23px !important;
+
+    box-shadow:
+        inset 0 2px 5px rgba(255,255,255,0.75),
+        0 4px 0 rgba(80,150,180,0.25),
+        0 6px 12px rgba(80,150,180,0.12) !important;
+
+    cursor: pointer;
+}
+
+/* 鼠标悬停：轻轻上浮 */
+.restart:hover,
+.music-toggle:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+}
+
+/* 点击反馈 */
+.restart:active,
+.music-toggle:active {
+    transform: translateY(2px);
+    box-shadow:
+        inset 0 2px 5px rgba(255,255,255,0.5),
+        0 1px 2px rgba(130,100,90,0.12) !important;
+}
+
+/* 小屏幕适配 */
+@media (max-width: 650px) {
+    .topbar {
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .counter,
+    .timer,
+    .fruit-stats,
+    .restart {
+        min-height: 48px !important;
+        height: 48px !important;
+        font-size: 15px !important;
+    }
+
+    .music-toggle {
+        width: 48px !important;
+        min-width: 48px !important;
+        height: 48px !important;
+    }
+
+    .restart-text,
+    .restart-icon {
+        font-size: 15px !important;
+    }
+}
+
+
+/* =================================
+   手机端：精简顶部游戏状态栏
+   ================================= */
+
+@media (max-width: 650px) {
+
+    /* 五个控件尽量放在同一排 */
+    .topbar {
+        display: grid !important;
+        grid-template-columns:
+            minmax(0, 0.8fr)
+            minmax(0, 1fr)
+            minmax(0, 1.1fr)
+            40px
+            40px !important;
+
+        gap: 5px !important;
+        width: 100%;
+        align-items: center;
+    }
+
+    /* 统一高度和字体 */
+    .counter,
+    .timer,
+    .fruit-stats,
+    .restart,
+    .music-toggle {
+        box-sizing: border-box;
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 44px !important;
+        min-height: 44px !important;
+
+        padding: 0 4px !important;
+        margin: 0 !important;
+
+        font-size: 14px !important;
+        white-space: nowrap;
+    }
+
+    /* 收集槽只显示 0/7 */
+    .counter {
+        flex: none !important;
+        gap: 1px;
+    }
+
+    .counter-icon {
+        display: none !important;
+    }
+
+    /* 倒计时只显示数字 */
+    .timer {
+        flex: none !important;
+        justify-content: center;
+    }
+
+    /* 水果统计只显示 剩余/总数 */
+    .fruit-stats {
+        flex: none !important;
+        justify-content: center;
+        gap: 2px !important;
+    }
+
+    .fruit-stats .stat-label,
+    .fruit-stats .stat-divider {
+        display: none !important;
+    }
+
+    /* 重新开始只显示 ↻ */
+    .restart {
+        flex: none !important;
+        justify-content: center;
+        padding: 0 !important;
+    }
+
+    .restart-text {
+        display: none !important;
+    }
+
+    .restart-icon {
+        display: inline !important;
+        font-size: 22px !important;
+    }
+
+    /* 静音按钮只显示图标 */
+    .music-toggle {
+        flex: none !important;
+        justify-content: center;
+        padding: 0 !important;
         font-size: 20px !important;
     }
 }
+
+
+/* ===== 手机端顶部信息栏最终修复 ===== */
+@media screen and (max-width: 650px) {
+
+    .topbar {
+        display: grid !important;
+
+        grid-template-columns:
+            minmax(0, 0.8fr)
+            minmax(0, 1.1fr)
+            minmax(0, 1.7fr)
+            38px
+            38px !important;
+
+        grid-template-rows: 46px !important;
+        grid-auto-flow: row !important;
+        gap: 5px !important;
+
+        width: 100% !important;
+        padding: 8px 2px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 强制五个元素各占一列 */
+    .topbar .counter {
+        grid-column: 1 !important;
+    }
+
+    .topbar .timer {
+        grid-column: 2 !important;
+    }
+
+    .topbar .fruit-stats {
+        grid-column: 3 !important;
+        min-width: 0 !important;
+        gap: 2px !important;
+        font-size: 12px !important;
+    }
+
+    .topbar .restart {
+        grid-column: 4 !important;
+    }
+
+    .topbar .music-toggle {
+        grid-column: 5 !important;
+        width: 38px !important;
+        height: 38px !important;
+    }
+}
+
+/* ===== 手机端顶部数字统一排版 ===== */
+@media screen and (max-width: 650px) {
+
+    /* 三个数字区域统一字体 */
+    .topbar .counter,
+    .topbar .timer,
+    .topbar .fruit-stats {
+        font-family: Arial, sans-serif !important;
+        font-size: 15px !important;
+        font-weight: 900 !important;
+        font-variant-numeric: tabular-nums !important;
+        letter-spacing: -0.4px !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+    }
+
+    /* 收集槽 */
+    .topbar .counter {
+        padding: 0 2px !important;
+        gap: 1px !important;
+    }
+
+    /* 倒计时 */
+    .topbar .timer {
+        padding: 0 1px !important;
+        font-size: 15px !important;
+        letter-spacing: -0.6px !important;
+        border-radius: 12px !important;
+        overflow: visible !important;
+    }
+
+    /* 水果统计 */
+    .topbar .fruit-stats {
+        padding: 0 3px !important;
+        gap: 2px !important;
+        justify-content: center !important;
+    }
+
+    .fruit-stats .remaining-stat {
+        display: inline-flex;
+        align-items: center;
+        gap: 1px;
+    }
+
+    .fruit-stats .stat-label,
+    .fruit-stats .stat-slash,
+    .fruit-stats #remaining-fruits,
+    .fruit-stats #total-fruits {
+        font-size: 15px !important;
+        font-weight: 900 !important;
+        font-variant-numeric: tabular-nums !important;
+    }
+}
+
 </style>
 <!-- Three.js 3D 引擎 -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
@@ -886,25 +1485,39 @@ body {
 </head>
 <body>
 <main class="game">
-   <h1 class="game-title">水果抓抓乐</h1>
+   <h1 class="game-title">
+    <img
+        src="images/fruit-title-plaque.png"
+        alt="水果抓抓乐"
+    >
+</h1>
 
 <div class="topbar">
 
     <div class="counter">
-        🧺 <span id="count">0</span> /
-        <span id="slot-capacity"></span>
-    </div>
+    <span class="counter-icon">🧺</span>
+    <span id="count">0</span>/<span id="slot-capacity"></span>
+</div>
 
     <div id="timer" class="timer">05:00</div>
 
-    <div class="fruit-stats">
-        <span>🍎 总数：<span id="total-fruits">60</span></span>
-        <span class="stat-divider">|</span>
-        <span>剩余：<span id="remaining-fruits">60</span></span>
-    </div>
+    
+<div class="fruit-stats">
+    <span class="remaining-stat">
+        <span class="stat-label">剩余：</span>
+        <span id="remaining-fruits">60</span>
+    </span>
+
+    <span class="stat-slash">/</span>
+
+    <span class="total-stat">
+        <span id="total-fruits">60</span>
+    </span>
+</div>
+
 
     <button class="restart" id="restart" type="button"
-        aria-label="重新开始" title="重新开始">
+    aria-label="重新开始" title="重新开始">
     <span class="restart-icon">↻</span>
     <span class="restart-text">重新开始</span>
 </button>
@@ -1061,7 +1674,7 @@ function playBackgroundStep() {
 
 
 // 启动背景音乐
-function startBackgroundMusic() {
+async function startBackgroundMusic() {
     if (!bgmEnabled || bgmTimer !== null) return;
 
     const AudioContextClass =
@@ -1077,12 +1690,18 @@ function startBackgroundMusic() {
 
         bgmMasterGain = bgmAudioContext.createGain();
         bgmMasterGain.gain.value = 0;
-
         bgmMasterGain.connect(bgmAudioContext.destination);
     }
 
-    bgmAudioContext.resume().then(function() {
-        if (!bgmEnabled || bgmTimer === null) return;
+    try {
+        await bgmAudioContext.resume();
+
+        if (!bgmEnabled) return;
+
+        if (bgmAudioContext.state !== "running") {
+            console.warn("音频上下文尚未运行");
+            return;
+        }
 
         bgmMasterGain.gain.setTargetAtTime(
             0.65,
@@ -1091,13 +1710,20 @@ function startBackgroundMusic() {
         );
 
         playBackgroundStep();
-    });
 
-    bgmTimer = setInterval(function() {
-        if (bgmAudioContext.state === "running") {
-            playBackgroundStep();
-        }
-    }, 240);
+        bgmTimer = setInterval(function() {
+            if (
+                bgmEnabled &&
+                bgmAudioContext.state === "running"
+            ) {
+                playBackgroundStep();
+            }
+        }, 240);
+
+    } catch (error) {
+        bgmTimer = null;
+        console.warn("背景音乐启动失败：", error);
+    }
 }
 
 // 暂停背景音乐
@@ -1671,7 +2297,7 @@ function init3DPreview() {
 
     // ===== 1. 创建 Three.js 场景 =====
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x463653);
+    scene.background = null;
 
     // GLB / GLTF 模型加载器
     const gltfLoader = new THREE.GLTFLoader();
@@ -1700,9 +2326,15 @@ camera.updateProjectionMatrix();
     camera.up.set(0, 0, -1);
     camera.updateProjectionMatrix();
 
+    
     const renderer = new THREE.WebGLRenderer({
-        antialias: true
+        antialias: true,
+        alpha: true
     });
+
+    // 让画布背景完全透明
+    renderer.setClearColor(0x000000, 0);
+
 
     renderer.setPixelRatio(
         Math.min(window.devicePixelRatio, 2)
@@ -2886,6 +3518,8 @@ document.querySelector(".game").addEventListener(
         }
     }
 );
+
+
 
 </script>
 </body>
